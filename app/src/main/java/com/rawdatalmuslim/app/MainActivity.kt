@@ -1,4 +1,4 @@
-package com.rawdata.muslim
+package com.rawdatalmuslim.app
 
 import android.os.Bundle
 import android.widget.Button
@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
 
         val btnPlayRadio = findViewById<Button>(R.id.btnPlayRadio)
         btnPlayRadio?.setOnClickListener {
-            Toast.makeText(this, "مرحباً بك في تطبيق روضة المسلم", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "مرحباً بك في تطبيق روضة المسلم", Toast.LENGTH_SHORT).show()
         }
     }
 }
