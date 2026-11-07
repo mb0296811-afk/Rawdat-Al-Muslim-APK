@@ -1,4 +1,4 @@
-package com.rawdatalmuslim;
+package com.rawdatalmuslim.app;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
