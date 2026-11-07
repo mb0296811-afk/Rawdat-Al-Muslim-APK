@@ -18,11 +18,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // إظهار واجهة التطبيق الرئيسية (المصحف)
         setContentView(R.layout.activity_main);
 
-        // ربط زر التشغيل بلطف وبدون أي أخطاء لو الزر غير موجود
         btnPlayRadio = findViewById(R.id.btnPlayRadio);
         final String radioUrl = "https://stream.radiojar.com/8s5u27wnv0quv";
 
