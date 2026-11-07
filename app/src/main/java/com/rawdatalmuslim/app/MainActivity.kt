@@ -1,64 +1,94 @@
-package com.rawdatalmuslim.app
+package com.example.rawdatalmuslim; // استبدل هذا باسم الحزمة الخاص بمشروعك (Package Name)
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.provider.Settings
-import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.core.app.ActivityCompat
-import org.json.JSONArray
-import org.json.JSONObject
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import java.io.IOException;
 
-class MainActivity : Activity() {
-    private lateinit var web: WebView
+public class MainActivity extends AppCompatActivity {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestRuntimePermissions()
-        web = WebView(this)
-        web.settings.javaScriptEnabled = true
-        web.settings.domStorageEnabled = true
-        web.settings.allowFileAccess = true
-        web.webViewClient = WebViewClient()
-        web.webChromeClient = WebChromeClient()
-        web.addJavascriptInterface(PrayerBridge(), "AndroidPrayer")
-        setContentView(web)
-        web.loadUrl("file:///android_asset/www/index.html")
+    private MediaPlayer mediaPlayer;
+    private Button btnPlayRadio;
+    private boolean isPlaying = false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        // 1. هذا السطر هو المسؤول أساساً عن إظهار واجهة المصحف على شاشة الهاتف
+        setContentView(R.layout.activity_main);
+
+        // 2. ربط زر التشغيل (تأكد أن لديك زر في ملف الـ xml بهذا الـ ID أو قم بتعديله)
+        btnPlayRadio = findViewById(R.id.btnPlayRadio);
+
+        // رابط البث المباشر لإذاعة القرآن الكريم من القاهرة
+        String radioUrl = "https://stream.radiojar.com/8s5u27wnv0quv";
+
+        btnPlayRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isPlaying) {
+                    startRadio(radioUrl);
+                } else {
+                    stopRadio();
+                }
+            }
+        });
     }
 
-    private fun requestRuntimePermissions() {
-        if (Build.VERSION.SDK_INT >= 33) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 101)
-        }
-        if (Build.VERSION.SDK_INT >= 31) {
-            val alarmManager = getSystemService(ALARM_SERVICE) as android.app.AlarmManager
-            if (!alarmManager.canScheduleExactAlarms()) {
-                startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
-            }
+    private void startRadio(String url) {
+        mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mediaPlayer.setDataSource(url);
+            mediaPlayer.prepareAsync(); // تجهيز البث أونلاين في الخلفية
+            
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.start();
+                    isPlaying = true;
+                    btnPlayRadio.setText("إيقاف الإذاعة");
+                    Toast.makeText(MainActivity.this, "جاري تشغيل إذاعة القرآن الكريم...", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int what, int extra) {
+                    Toast.makeText(MainActivity.this, "تعذر تشغيل الإذاعة، تأكد من الإنترنت", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    inner class PrayerBridge {
-        @JavascriptInterface fun syncPrayerData(prayersJson: String, preAlert: Boolean, muted: Boolean) {
-            getSharedPreferences(PrayerScheduler.PREFS, MODE_PRIVATE).edit()
-                .putString("prayers", prayersJson)
-                .putBoolean("preAlert", preAlert)
-                .putBoolean("muted", muted)
-                .apply()
-            PrayerScheduler.scheduleAll(this@MainActivity)
-        }
-
-        @JavascriptInterface fun requestAlarmPermission() {
-            if (Build.VERSION.SDK_INT >= 31) {
-                val am = getSystemService(ALARM_SERVICE) as android.app.AlarmManager
-                if (!am.canScheduleExactAlarms()) startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, Uri.parse("package:$packageName")))
+    private void stopRadio() {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
             }
+            mediaPlayer.release();
+            mediaPlayer = null;
+            isPlaying = false;
+            btnPlayRadio.setText("تشغيل الإذاعة");
+            Toast.makeText(MainActivity.this, "تم إيقاف الإذاعة", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 }
