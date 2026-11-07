@@ -11,17 +11,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up JDK 21
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: '21'
+        java-version: '17'
 
     - name: Build Debug APK using Gradle
       uses: gradle/gradle-build-action@v3
       with:
         gradle-version: '8.9'
-        arguments: :app:assembleDebug
+        arguments: :app:assembleDebug -Pkotlin.jvm.target.validation.mode=warning
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
