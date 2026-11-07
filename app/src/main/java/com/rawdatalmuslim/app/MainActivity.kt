@@ -1,4 +1,4 @@
-package com.example.rawdatalmuslim; // استبدل هذا باسم الحزمة الخاص بمشروعك (Package Name)
+package com.rawdatalmuslim;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -19,13 +19,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        // 1. هذا السطر هو المسؤول أساساً عن إظهار واجهة المصحف على شاشة الهاتف
+        // إظهار واجهة التطبيق الرئيسية
         setContentView(R.layout.activity_main);
 
-        // 2. ربط زر التشغيل (تأكد أن لديك زر في ملف الـ xml بهذا الـ ID أو قم بتعديله)
+        // ربط زر التشغيل
         btnPlayRadio = findViewById(R.id.btnPlayRadio);
 
-        // رابط البث المباشر لإذاعة القرآن الكريم من القاهرة
+        // رابط البث المباشر لإذاعة القرآن الكريم
         String radioUrl = "https://stream.radiojar.com/8s5u27wnv0quv";
 
         btnPlayRadio.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync(); // تجهيز البث أونلاين في الخلفية
+            mediaPlayer.prepareAsync();
             
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
