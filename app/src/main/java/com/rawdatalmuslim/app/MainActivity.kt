@@ -1,94 +1,80 @@
-package com.rawdatalmuslim;
+package com.rawdatalmuslim
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import java.io.IOException;
+import android.media.AudioManager
+import android.media.MediaPlayer
+import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
 
-public class MainActivity extends AppCompatActivity {
+class MainActivity : AppCompatActivity() {
 
-    private MediaPlayer mediaPlayer;
-    private Button btnPlayRadio;
-    private boolean isPlaying = false;
+    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var btnPlayRadio: Button
+    private var isPlaying = false
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         
         // إظهار واجهة التطبيق الرئيسية
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main)
 
         // ربط زر التشغيل
-        btnPlayRadio = findViewById(R.id.btnPlayRadio);
+        btnPlayRadio = findViewById(R.id.btnPlayRadio)
 
         // رابط البث المباشر لإذاعة القرآن الكريم
-        String radioUrl = "https://stream.radiojar.com/8s5u27wnv0quv";
+        val radioUrl = "https://stream.radiojar.com/8s5u27wnv0quv"
 
-        btnPlayRadio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isPlaying) {
-                    startRadio(radioUrl);
-                } else {
-                    stopRadio();
-                }
+        btnPlayRadio.setOnClickListener {
+            if (!isPlaying) {
+                startRadio(radioUrl)
+            } else {
+                stopRadio()
             }
-        });
-    }
-
-    private void startRadio(String url) {
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(url);
-            mediaPlayer.prepareAsync();
-            
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mp.start();
-                    isPlaying = true;
-                    btnPlayRadio.setText("إيقاف الإذاعة");
-                    Toast.makeText(MainActivity.this, "جاري تشغيل إذاعة القرآن الكريم...", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-                @Override
-                public boolean onError(MediaPlayer mp, int what, int extra) {
-                    Toast.makeText(MainActivity.this, "تعذر تشغيل الإذاعة، تأكد من الإنترنت", Toast.LENGTH_SHORT).show();
-                    return true;
-                }
-            });
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void stopRadio() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+    private fun startRadio(url: String) {
+        mediaPlayer = MediaPlayer().apply {
+            try {
+                setAudioStreamType(AudioManager.STREAM_MUSIC)
+                setDataSource(url)
+                prepareAsync()
+                
+                setOnPreparedListener { mp ->
+                    mp.start()
+                    isPlaying = true
+                    btnPlayRadio.text = "إيقاف الإذاعة"
+                    Toast.makeText(this@MainActivity, "جاري تشغيل إذاعة القرآن الكريم...", Toast.LENGTH_SHORT).show()
+                }
+
+                setOnErrorListener { _, _, _ ->
+                    Toast.makeText(this@MainActivity, "تعذر تشغيل الإذاعة، تأكد من الإنترنت", Toast.LENGTH_SHORT).show()
+                    true
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-            mediaPlayer.release();
-            mediaPlayer = null;
-            isPlaying = false;
-            btnPlayRadio.setText("تشغيل الإذاعة");
-            Toast.makeText(MainActivity.this, "تم إيقاف الإذاعة", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
+    private fun stopRadio() {
+        mediaPlayer?.let {
+            if (it.isPlaying) {
+                it.stop()
+            }
+            it.release()
         }
+        mediaPlayer = null
+        isPlaying = false
+        btnPlayRadio.text = "تشغيل الإذاعة"
+        Toast.makeText(this, "تم إيقاف الإذاعة", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }
