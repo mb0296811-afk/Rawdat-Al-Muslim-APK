@@ -3,7 +3,7 @@ package com.rawdatalim.rawdatmuslim
 import android.os.Bundle
 import android.webkit.WebSettings
 import android.webkit.WebView
-importandroid.webkit.WebViewClient
+import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         webView.webViewClient = WebViewClient()
         
-        // تحميل ملف index.html من مجلد assets
+        // تحميل واجهة روضة المسلم من الأصول محلياً وبدون نت
         webView.loadUrl("file:///android_asset/index.html")
     }
 
