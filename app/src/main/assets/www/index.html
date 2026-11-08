@@ -210,12 +210,20 @@ button:hover { background: var(--primary-color); transform: translateY(-1px); }
 .progress-bar-bg { width: 100%; height: 14px; background: var(--border-color); border-radius: 8px; overflow: hidden; margin: 10px 0; }
 .progress-bar-fill { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.2s ease; }
 
+/* إطار المصحف الشريف المصمم لملف standard1-quran.pdf */
+.quran-container {
+    background: linear-gradient(145deg, #0b2e1b, #1b4332);
+    padding: 12px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: 3px solid var(--accent-color);
+}
 .pdf-viewer-frame {
     width: 100%;
-    height: 75vh;
-    border: 1px solid var(--border-color);
+    height: 78vh;
+    border: none;
     border-radius: 12px;
-    background: var(--card-bg);
+    background: #ffffff;
 }
 
 audio { width: 100%; margin-top: 12px; border-radius: 8px; }
@@ -235,7 +243,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('homeTab')">🏠 الرئيسية</button>
         <button class="tab-btn" onclick="switchTab('salatyTab')">🕋 صلاتي والآذان</button>
-        <button class="tab-btn" onclick="switchTab('quranTab')">📖 القرآن الكريم (أوفلاين)</button>
+        <button class="tab-btn" onclick="switchTab('quranTab')">📖 القرآن الكريم</button>
         <button class="tab-btn" onclick="switchTab('audioTab')">🎧 التلاوة</button>
         <button class="tab-btn" onclick="switchTab('radioTab')">📻 الإذاعة</button>
         <button class="tab-btn" onclick="switchTab('namesTab')">🌟 الأسماء الحسنى</button>
@@ -269,16 +277,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
             <h2>🕋 مواقيت الصلاة والآذان والتنبيهات</h2>
             <div style="background: var(--bg-color); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border-color);">
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
-                    <input type="checkbox" id="preAdhanAlertCheck" checked onchange="saveAdhanSettings()">
-                    ⏰ تفعيل التنبيه قبل الآذان بـ 10 دقائق
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
                     <input type="checkbox" id="adhanOverlayCheck" checked onchange="saveAdhanSettings()">
-                    🖼️ إظهار خلفية الشاشة الكاملة أثناء الآذان
+                    🖼️ إظهار خلفية الشاشة الكاملة وتشغيل الصوت عند حلول وقت الآذان
                 </label>
                 <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                     <input type="checkbox" id="muteModeCheck" onchange="saveAdhanSettings()">
-                    🔇 تفعيل وضع الصامت (إيقاف تشغيل الآذان تلقائياً)
+                    🔇 تفعيل وضع الصامت (إيقاف تشغيل صوت الآذان تلقائياً)
                 </label>
             </div>
 
@@ -300,12 +304,14 @@ html, body { max-width: 100%; overflow-x: hidden; }
         </div>
     </section>
 
-    <!-- القرآن أوفلاين -->
+    <!-- القرآن الكريم (من ملف standard1-quran.pdf الخاص بك) -->
     <section id="quranTab" class="section-pane">
         <div class="box">
-            <h2>📖 قراءة القرآن الكريم (بدون إنترنت)</h2>
-            <p style="margin-bottom: 12px; color: var(--text-muted);">تصفح المصحف الشريف مباشرة دون الحاجة للاتصال بالإنترنت:</p>
-            <iframe src="standard1-quran.pdf" class="pdf-viewer-frame" title="قراءة القرآن الكريم"></iframe>
+            <h2>📖 قراءة القرآن الكريم</h2>
+            <p style="margin-bottom: 12px; color: var(--text-muted);">تصفح المصحف الشريف بسهولة مباشرة من ملف المصحف الخاص بك:</p>
+            <div class="quran-container">
+                <iframe src="standard1-quran.pdf" class="pdf-viewer-frame" title="قراءة القرآن الكريم"></iframe>
+            </div>
         </div>
     </section>
 
@@ -321,6 +327,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
                 <div>
                     <label for="reciter">اختر القارئ</label>
                     <select id="reciter">
+                        <option value="https://server11.mp3quran.net/a_jbr/">علي جابر</option>
                         <option value="https://server8.mp3quran.net/afs/">مشاري العفاسي</option>
                         <option value="https://server10.mp3quran.net/ajm/">أحمد العجمي</option>
                         <option value="https://server10.mp3quran.net/minsh/">محمد صديق المنشاوي</option>
@@ -478,7 +485,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
 <div id="adhanOverlay">
     <div class="adhan-title" id="adhanOverlayTitle">الله أكبر - حان وقت الآذان</div>
     <div class="adhan-sub" id="adhanOverlayPrayer">حي على الصلاة</div>
-    <button onclick="stopAdhanOverlay()" style="max-width: 200px; padding: 12px; background: var(--accent-color); color: var(--primary-color);">إغلاق الصوت والخلفية ✖</button>
+    <button onclick="stopAdhanOverlay()" style="max-width: 250px; padding: 12px; background: var(--accent-color); color: var(--primary-color); font-weight: bold; border-radius: 10px; cursor: pointer;">كتم الصوت وإغلاق الشاشة ✖</button>
 </div>
 
 <audio id="adhanAudioPlayer"></audio>
@@ -497,6 +504,7 @@ if ('serviceWorker' in navigator) {
 const surahs = ["الفاتحة","البقرة","آل عمران","النساء","المائدة","الأنعام","الأعراف","الأنفال","التوبة","يونس","هود","يوسف","الرعد","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبيـاء","الحج","المؤمنون","النور","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","الأحزاب","سبأ","فاطر","يس","الصافات","ص","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الجاثية","الأحقاف","محمد","الفتح","الحجرات","ق","الذاريات","الطور","النجم","القمر","الرحمن","الواقعة","الحديد","المجادلة","الحشر","الممتحنة","الصف","الجمعة","المنافقون","التغابن","الطلاق","التحريم","الملك","القلم","الحاقة","المعارج","نوح","الجن","المزمل","المدثر","القيامة","الإنسان","المرسلات","النبأ","النازعات","عبس","التكوير","الانفطار","المطففين","الانشقاق","البروج","الطارق","الأعلى","الغاشية","الفجر","البلد","الشمس","الليل","الضحى","الشرح","التين","العلق","القدر","البينة","الزلزلة","العاديات","القارعة","التكاثر","العصر","الهمزة","الفيل","قريش","الماعون","الكوثر","الكافرون","النصر","المسد","الإخلاص","الفلق","الناس"];
 
 const audioSurahSelect = document.getElementById("audioSurah");
+
 surahs.forEach((name, index) => {
     audioSurahSelect.innerHTML += `<option value="${index + 1}">${index + 1}. سورة ${name}</option>`;
 });
@@ -624,7 +632,7 @@ function previewAdhan(file) {
 
 function testAdhanNotice(prayerName, file) {
     if (document.getElementById('adhanOverlayCheck').checked) {
-        document.getElementById('adhanOverlayTitle').textContent = `تجربة آذان ${prayerName}`;
+        document.getElementById('adhanOverlayTitle').textContent = `حان الآن وقت أذان ${prayerName}`;
         document.getElementById('adhanOverlay').classList.add('active');
     }
     const player = document.getElementById("adhanAudioPlayer");
@@ -640,7 +648,6 @@ function togglePrayer(index) {
 renderPrayers();
 
 function saveAdhanSettings() {
-    localStorage.setItem('preAlert', document.getElementById('preAdhanAlertCheck').checked);
     localStorage.setItem('overlayShow', document.getElementById('adhanOverlayCheck').checked);
     localStorage.setItem('muteMode', document.getElementById('muteModeCheck').checked);
     syncNativePrayerAlarms();
@@ -651,19 +658,16 @@ function syncNativePrayerAlarms() {
         if (window.AndroidPrayer && typeof window.AndroidPrayer.syncPrayerData === 'function') {
             AndroidPrayer.syncPrayerData(
                 JSON.stringify(prayersList),
-                document.getElementById('preAdhanAlertCheck').checked,
+                false,
                 document.getElementById('muteModeCheck').checked
             );
         }
     } catch (e) { console.log('Native prayer sync unavailable', e); }
 }
 
-// Restore saved alert preferences and sync them with Android after the page is ready.
 (function restoreAdhanPreferences() {
-    const pre = localStorage.getItem('preAlert');
     const overlay = localStorage.getItem('overlayShow');
     const muted = localStorage.getItem('muteMode');
-    if (pre !== null) document.getElementById('preAdhanAlertCheck').checked = pre === 'true';
     if (overlay !== null) document.getElementById('adhanOverlayCheck').checked = overlay === 'true';
     if (muted !== null) document.getElementById('muteModeCheck').checked = muted === 'true';
     syncNativePrayerAlarms();
@@ -706,10 +710,36 @@ function stopAdhanOverlay() {
     player.currentTime = 0;
 }
 
+// كتم الصوت وإيقاف الآذان عند الضغط على أزرار الصوت بجانب الهاتف
+window.addEventListener('keydown', function(event) {
+    const player = document.getElementById("adhanAudioPlayer");
+    if (!player.paused || document.getElementById('adhanOverlay').classList.contains('active')) {
+        if (event.key === 'VolumeUp' || event.key === 'VolumeDown' || event.keyCode === 174 || event.keyCode === 175) {
+            stopAdhanOverlay();
+        }
+    }
+});
+
+// روابط بث احتياطية ورسمية متعددة لإذاعة القرآن الكريم لضمان التشغيل المستقر
 function playRadioCairo() {
     const audio = document.getElementById("cairoRadioAudio");
-    audio.src = "https://stream.radiojar.com/8s5u5tpdtwzuv";
-    audio.play();
+    const streamUrls = [
+        "https://stream.radiojar.com/8s5u5tpdtwzuv",
+        "https://n02.crypto-services.academy/stream/quran_cairo",
+        "https://live.radioeg.net/radio/8020/stream"
+    ];
+    let currentUrlIndex = 0;
+    
+    audio.src = streamUrls[currentUrlIndex];
+    audio.play().catch(() => {
+        audio.onerror = function() {
+            currentUrlIndex++;
+            if (currentUrlIndex < streamUrls.length) {
+                audio.src = streamUrls[currentUrlIndex];
+                audio.play();
+            }
+        };
+    });
 }
 
 function playSurah() {
