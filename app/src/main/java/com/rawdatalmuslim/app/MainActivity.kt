@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         webView.webViewClient = WebViewClient()
         
-        // تحميل ملف index.html من مجلد assets مباشرة
+        // تحميل ملف index.html المباشر من مجلد assets
         webView.loadUrl("file:///android_asset/index.html")
     }
 
