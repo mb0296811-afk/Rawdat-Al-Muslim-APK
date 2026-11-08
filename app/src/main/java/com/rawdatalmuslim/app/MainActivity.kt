@@ -20,8 +20,6 @@ class MainActivity : AppCompatActivity() {
         webSettings.allowFileAccess = true
 
         webView.webViewClient = WebViewClient()
-        
-        // تحميل واجهة روضة المسلم من الأصول محلياً وبدون نت
         webView.loadUrl("file:///android_asset/index.html")
     }
 
